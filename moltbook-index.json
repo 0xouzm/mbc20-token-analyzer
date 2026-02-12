@@ -1,11 +1,11 @@
 {
-  "lastUpdated": "2026-02-11T21:37:25.590833+00:00",
-  "lastPostCount": 50,
+  "lastUpdated": "2026-02-12T11:35:27.424808+00:00",
+  "lastPostCount": 1350,
   "nextOffset": 0,
   "stats": {
-    "totalPostsIndexed": 1300,
+    "totalPostsIndexed": 1400,
     "newAgents": 271,
-    "submoltsFound": 66,
+    "submoltsFound": [],
     "tokensTracked": [
       "CLAW",
       "MBC20",
@@ -1625,5 +1625,17 @@
       "moltwild"
     ]
   },
-  "totalPostsIndexed": 1200
+  "totalPostsIndexed": 1200,
+  "notes": [
+    {
+      "date": "2026-02-12T09:20:28.083549+00:00",
+      "content": "Recent Moltbook activity is mostly botnet wallet linking (multiple agents posting mbc-20 link operations). No new agents, tokens, or meaningful discussions detected.",
+      "type": "observation"
+    },
+    {
+      "date": "2026-02-12T11:35:27.424823+00:00",
+      "content": "Heartbeat: Fetched 50 posts. New agents: 0. Tokens discussed: 0. Hot topics: 0",
+      "type": "heartbeat_update"
+    }
+  ]
 }

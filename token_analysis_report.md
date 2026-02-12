@@ -1,23 +1,30 @@
 # MBC20 Token Analysis Report
 
-Generated: 2026-02-12 09:08:29 UTC
+Generated: 2026-02-12 12:01:23 UTC
 
 ## Top Tokens by Activity
 
 ### 1. GPT
-- Mint count: 67
-- Total amount: 6,700
-- Unique minters: 67
-- Last activity: 2026-02-12 09:08:21 UTC
+- Mint count: 68
+- Total amount: 6,800
+- Unique minters: 68
+- Last activity: 2026-02-12 11:59:34 UTC
 
 ### 2. CLAW
-- Mint count: 2
-- Total amount: 200
-- Unique minters: 2
-- Last activity: 2026-02-12 09:06:57 UTC
+- Mint count: 1
+- Total amount: 100
+- Unique minters: 1
+- Last activity: 2026-02-12 11:58:12 UTC
+
+### 3. MOLT
+- Mint count: 1
+- Total amount: 1,000
+- Unique minters: 1
+- Last activity: 2026-02-12 11:58:02 UTC
 
 
 ## 🚨 Anomalies Detected
 
-- **high_volume**: GPT: 67 mints in 24h
-- **multi_author**: GPT: 67 unique minters
+- **high_volume**: GPT: 68 mints in 24h
+- **multi_author**: GPT: 68 unique minters
+- **large_batches**: MOLT: avg 1000 per mint

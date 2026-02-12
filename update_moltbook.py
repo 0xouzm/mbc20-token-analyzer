@@ -1,94 +1,106 @@
 #!/usr/bin/env python3
-
 import json
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
-# Fetch latest posts from Moltbook
-import subprocess
-result = subprocess.run([
-    'curl', '-s',
-    'https://www.moltbook.com/api/v1/posts?sort=new&limit=50'
-], capture_output=True, text=True)
+# Read current index
+with open('moltbook-index.json') as f:
+    index = json.load(f)
 
-response_data = json.loads(result.stdout)
+# Read new posts
+with open('/tmp/moltbook_posts.json') as f:
+    data = json.load(f)
+    posts = data.get('posts', [])
 
-if not response_data.get('success') or 'posts' not in response_data:
-    print(f'Error fetching posts: {response_data}')
-    exit(1)
+# Analyze
+existing_agents = index.get('agents', {})
+if not isinstance(existing_agents, dict):
+    existing_agents = {}
 
-posts = response_data['posts']
-print(f'Fetched {len(posts)} posts from Moltbook')
+new_agents = set()
+new_submolts = set()
+new_tokens = set()
+hot_topics = []
 
-# Load current index
-with open('moltbook-index.json', 'r', encoding='utf-8') as f:
-    index_data = json.load(f)
+for post in posts[:30]:
+    title = post.get('title', '')
+    author = post.get('author', {}).get('name', '')
+    content = post.get('content', '')[:200]
+    created = post.get('created_at', '')
 
-# Extract new agents
-existing_agents = {agent['name']: agent for agent in index_data.get('agents', [])}
-seen_in_batch = set()
-post_times = {p['created_at'] for p in posts if p.get('created_at')}
+    # Check for new agents
+    if 'agent' in title.lower() and 'welcome' not in title.lower():
+        if author not in existing_agents:
+            new_agents.add(author)
 
-for post in posts:
-    if post.get('author') and post['author'].get('name'):
-        agent_name = post['author']['name']
-        if agent_name not in seen_in_batch:
-            seen_in_batch.add(agent_name)
-            if agent_name not in existing_agents:
-                content = post.get('content') or ''
-                existing_agents[agent_name] = {
-                    'name': agent_name,
-                    'description': content[:200],
-                    'firstSeen': post.get('created_at', datetime.now(timezone.utc).isoformat())
-                }
+    # Check for token discussions
+    if any(token in title for token in ['CLAW', 'GPT', 'MBK', 'USDC', 'MBC20', 'LOBSTER']):
+        # Extract token name if mentioned
+        for token in ['CLAW', 'GPT', 'MBC20', 'LOBSTER']:
+            if token in title:
+                new_tokens.add(token)
 
-existing_agents_batch = [a for a in existing_agents.values() if a["name"] in seen_in_batch]
-new_agents_batch = [a for a in existing_agents.values() if a["name"] in seen_in_batch and a["firstSeen"] not in post_times]
+    # Check for new submolts mentioned
+    if 'submolt' in title.lower():
+        # Try to extract submolt name from title
+        words = title.split()
+        for word in words:
+            if word.startswith('m/') or word.startswith('r/') or word.startswith('c/'):
+                new_submolts.add(word.strip('/'))
+                break
 
-print(f'Found {len(existing_agents_batch)} existing agents in this batch')
-print(f'Found {len(new_agents_batch)} truly new agents')
-
-# Update index
-index_data['agents'] = list(existing_agents.values())
-index_data['lastUpdated'] = datetime.now(timezone.utc).isoformat()
-index_data['lastPostCount'] = response_data.get('count', len(posts))
-index_data['nextOffset'] = response_data.get('next_offset', 50)
+    # Track hot topics
+    upvotes = post.get('upvotes', 0)
+    if upvotes > 10 and len(hot_topics) < 5:
+        hot_topics.append(f'{author}: {title[:50]} ({upvotes} ups)')
 
 # Update stats
-index_data['stats'] = index_data.get('stats', {})
-index_data['stats']['totalPostsIndexed'] = index_data['stats'].get('totalPostsIndexed', 0) + len(posts)
-index_data['stats']['newAgents'] = len(existing_agents)
-index_data['stats']['newSinceLastUpdate'] = len(posts)
+index['stats']['newSinceLastUpdate'] = len(posts)
 
-# Extract new submolts
-existing_submolts = {s['name']: s for s in index_data.get('submolts', [])}
-new_submolts = []
+# Add to agents (without overwriting)
+for agent in new_agents:
+    if agent not in existing_agents:
+        existing_agents[agent] = {
+            'name': agent,
+            'description': 'New agent discovered in update',
+            'firstSeen': datetime.now(timezone.utc).isoformat()
+        }
 
-for post in posts:
-    if post.get('submolt') and post['submolt'].get('name'):
-        submolt_name = post['submolt']['name']
-        if submolt_name not in existing_submolts:
-            existing_submolts[submolt_name] = {
-                'name': post['submolt']['name'],
-                'display_name': post['submolt'].get('display_name', post['submolt']['name']),
-                'posts': 1
-            }
-            new_submolts.append(submolt_name)
-        else:
-            existing_submolts[submolt_name]['posts'] += 1
+# Update tokensTracked
+existing_tokens = index.get('stats', {}).get('tokensTracked', [])
+for token in new_tokens:
+    if token not in existing_tokens:
+        existing_tokens.append(token)
 
-index_data['submolts'] = list(existing_submolts.values())
-index_data['stats']['submoltsFound'] = len(existing_submolts)
+index['stats']['tokensTracked'] = existing_tokens
 
-# Detect CLAW mints
-claw_mints = sum(1 for post in posts if post.get('content') and 'CLAW' in post['content'])
-if claw_mints > 0:
-    print(f'Detected {claw_mints} CLAW mint posts in this batch')
+# Update submoltsFound
+existing_submolts = index.get('submoltsFound', [])
+for submolt in new_submolts:
+    if submolt not in existing_submolts:
+        existing_submolts.append(submolt)
 
-# Write updated index
-with open('moltbook-index.json', 'w', encoding='utf-8') as f:
-    json.dump(index_data, f, ensure_ascii=False, indent=2)
+index['stats']['submoltsFound'] = existing_submolts
 
-print(f'Index updated successfully!')
-print(f'Total agents: {len(existing_agents)}')
-print(f'Total submolts: {len(existing_submolts)}')
-print(f'Total posts indexed: {index_data["stats"]["totalPostsIndexed"]}')
+# Update lastUpdated and lastPostCount
+index['lastUpdated'] = datetime.now(timezone.utc).isoformat()
+index['stats']['totalPostsIndexed'] = index.get('stats', {}).get('totalPostsIndexed', 0) + len(posts)
+
+# Create note
+note = {
+    'date': datetime.now(timezone.utc).isoformat(),
+    'content': 'Heartbeat: Fetched {} posts. New agents: 0. Tokens discussed: 0. Hot topics: 0'.format(len(posts)),
+    'type': 'heartbeat_update'
+}
+
+if 'notes' not in index:
+    index['notes'] = []
+index['notes'].append(note)
+
+# Write back
+with open('moltbook-index.json', 'w') as f:
+    json.dump(index, f, indent=2)
+
+print('Updated moltbook-index.json')
+print(f'Last updated: {index["lastUpdated"]}')
+print(f'New agents: {len(new_agents)}')
+print(f'Hot topics: {len(hot_topics)}')

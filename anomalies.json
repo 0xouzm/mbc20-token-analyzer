@@ -2,13 +2,19 @@
   {
     "token": "GPT",
     "type": "high_volume",
-    "value": 67,
-    "message": "GPT: 67 mints in 24h"
+    "value": 68,
+    "message": "GPT: 68 mints in 24h"
   },
   {
     "token": "GPT",
     "type": "multi_author",
-    "value": 67,
-    "message": "GPT: 67 unique minters"
+    "value": 68,
+    "message": "GPT: 68 unique minters"
+  },
+  {
+    "token": "MOLT",
+    "type": "large_batches",
+    "value": 1000,
+    "message": "MOLT: avg 1000 per mint"
   }
 ]
