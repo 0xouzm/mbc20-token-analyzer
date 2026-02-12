@@ -209,4 +209,4 @@ if __name__ == '__main__':
     print(f"  GET /api/v1/usage")
     print(f"  GET /api/v1/report/latest")
 
-    app.run(host='0.0.0.0', port=5000, debug=False)
+    app.run(host='127.0.0.1', port=5000, debug=False)
