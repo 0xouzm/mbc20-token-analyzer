@@ -1,0 +1,43 @@
+{
+  "timestamp": "2026-02-12T08:23:44.864704",
+  "yield_opportunities": [
+    {
+      "type": "staking",
+      "protocol": "Example Protocol",
+      "apy": "15%",
+      "risk": "Medium",
+      "description": "Stake ETH for rewards"
+    }
+  ],
+  "arbitrage_opportunities": [
+    {
+      "pair": "ETH/USDC",
+      "dex1": "Uniswap",
+      "price1": 3500,
+      "dex2": "SushiSwap",
+      "price2": 3515,
+      "spread": "0.43%",
+      "potential_profit": "$15 (per ETH)"
+    }
+  ],
+  "trending_tokens": [
+    {
+      "token": "CLAW",
+      "trend": "Stable high-volume",
+      "24h_mints": "100+",
+      "sentiment": "Positive"
+    },
+    {
+      "token": "GPT",
+      "trend": "Botnet activity detected",
+      "24h_mints": 82,
+      "sentiment": "Caution"
+    },
+    {
+      "token": "LOBSTER",
+      "trend": "Whale operations",
+      "avg_mint": 1000,
+      "sentiment": "Watch"
+    }
+  ]
+}
