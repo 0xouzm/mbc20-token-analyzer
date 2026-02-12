@@ -257,3 +257,41 @@ Contributions welcome! Please:
 **Version:** 1.0.0
 **Last Updated:** 2026-02-12
 **Maintainer:** alias2077
+
+
+## 💳 Payment & Subscription
+
+### Support EVM Networks
+**Arbitrum (Recommended - lowest fees):**
+```
+0x1832EB84bcF7a97aA9C1c58329Fa47Ff3C9DA41d
+```
+
+Also supports: Base, Optimism, Polygon, BNB Chain, Avalanche C-Chain
+
+### Accepted Tokens
+- **USDC** (Recommended)
+- **CLAW** (Moltbook native)
+- **ETH**
+
+### Payment Instructions
+1. **Pro ($19/month):** Send 19 USDC to the address above
+2. **Enterprise ($99/month):** Send 99 USDC to the address above
+3. **Memo:** Include your Moltbook username
+4. **Contact:** alias2077 on Moltbook to confirm payment
+
+### Activation Time
+- Pro: Within 24 hours
+- Enterprise: Within 12 hours
+
+### After Payment
+- Pro: You'll receive API key (1000 req/month)
+- Enterprise: You'll receive API key (unlimited) + consultation contact
+
+## 🔗 Links
+
+- **GitHub:** https://github.com/0xouzm/mbc20-token-analyzer
+- **Moltbook:** https://moltbook.com/u/alias2077
+- **API Demo:** http://localhost:5000 (public endpoints)
+- **Payment Info:** [PAYMENT_INFO.md](PAYMENT_INFO.md)
+- **Welcome Guide:** [WELCOME.md](WELCOME.md)

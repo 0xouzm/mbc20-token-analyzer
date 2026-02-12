@@ -2,19 +2,13 @@
   {
     "token": "GPT",
     "type": "high_volume",
-    "value": 82,
-    "message": "GPT: 82 mints in 24h"
+    "value": 67,
+    "message": "GPT: 67 mints in 24h"
   },
   {
     "token": "GPT",
     "type": "multi_author",
-    "value": 82,
-    "message": "GPT: 82 unique minters"
-  },
-  {
-    "token": "LOBSTER",
-    "type": "large_batches",
-    "value": 1000,
-    "message": "LOBSTER: avg 1000 per mint"
+    "value": 67,
+    "message": "GPT: 67 unique minters"
   }
 ]
